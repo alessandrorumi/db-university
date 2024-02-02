@@ -105,7 +105,7 @@ FROM degrees
 
 6. Selezionare tutti i docenti che insegnano nel Dipartimento di Matematica (54)
 ```sql
-SELECT teachers.surname 'teacher_surname', teachers.name 'teacher_name', departments.name 'department_name'
+SELECT DISTINCT teachers.surname 'teacher_surname', teachers.name 'teacher_name', departments.name 'department_name'
 FROM teachers
   JOIN course_teacher
     ON teachers.id = course_teacher.teacher_id
@@ -122,5 +122,14 @@ WHERE departments.name LIKE 'Dipartimento di Matematica';
 ##### Bonus
 7. Selezionare per ogni studente il numero di tentativi sostenuti per ogni esame, stampando anche il voto massimo. Successivamente, filtrare i tentativi con voto minimo 18.
 ```sql
-
+SELECT students.name, students.surname, courses.name, COUNT(*), MAX(exam_student.vote) 'vote_max'
+FROM students
+    JOIN exam_student
+        ON students.id = exam_student.student_id
+    JOIN exams
+        ON exam_student.exam_id = exams.id
+    JOIN courses
+        ON exams.course_id = courses.id
+GROUP BY students.id, courses.id
+HAVING vote_max >= 18;
 ```
